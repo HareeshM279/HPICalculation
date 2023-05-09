@@ -6,11 +6,11 @@ public class HPIPOMonthlyHist {
 
 	private LocalDate month;
 	
-//	private Double eastNorthCentralNSA;
-//	
-//	private Double eastNorthCentralSA;
-//	
-//	private Double eastSouthCentralNSA;
+	private Double eastNorthCentralNSA;
+	
+	private Double eastNorthCentralSA;
+	
+	private Double eastSouthCentralNSA;
 	
 	private Double eastSouthCentralSA;
 	
@@ -52,6 +52,30 @@ public class HPIPOMonthlyHist {
 
 	public void setMonth(LocalDate month) {
 		this.month = month;
+	}
+
+	public Double getEastNorthCentralNSA() {
+		return eastNorthCentralNSA;
+	}
+
+	public void setEastNorthCentralNSA(Double eastNorthCentralNSA) {
+		this.eastNorthCentralNSA = eastNorthCentralNSA;
+	}
+
+	public Double getEastNorthCentralSA() {
+		return eastNorthCentralSA;
+	}
+
+	public void setEastNorthCentralSA(Double eastNorthCentralSA) {
+		this.eastNorthCentralSA = eastNorthCentralSA;
+	}
+
+	public Double getEastSouthCentralNSA() {
+		return eastSouthCentralNSA;
+	}
+
+	public void setEastSouthCentralNSA(Double eastSouthCentralNSA) {
+		this.eastSouthCentralNSA = eastSouthCentralNSA;
 	}
 
 	public Double getEastSouthCentralSA() {
