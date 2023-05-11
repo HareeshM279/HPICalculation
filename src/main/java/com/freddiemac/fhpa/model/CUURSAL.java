@@ -1,18 +1,18 @@
 package com.freddiemac.fhpa.model;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class CUURSAL {
 
-	private LocalDate observationDate;
+	private Date observationDate;
 	
 	private double CUUR0000SA0L2;
 
-	public LocalDate getObservationDate() {
+	public Date getObservationDate() {
 		return observationDate;
 	}
 
-	public void setObservationDate(LocalDate observationDate) {
+	public void setObservationDate(Date observationDate) {
 		this.observationDate = observationDate;
 	}
 

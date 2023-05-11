@@ -1,10 +1,10 @@
 package com.freddiemac.fhpa.model;
 
-import java.time.LocalDate;
+import java.util.Date;
 
 public class HPIPOMonthlyHist {
 
-	private LocalDate month;
+	private Date month;
 	
 	private Double eastNorthCentralNSA;
 	
@@ -46,11 +46,11 @@ public class HPIPOMonthlyHist {
 	
 	private Double usaSA;
 
-	public LocalDate getMonth() {
+	public Date getMonth() {
 		return month;
 	}
 
-	public void setMonth(LocalDate month) {
+	public void setMonth(Date month) {
 		this.month = month;
 	}
 

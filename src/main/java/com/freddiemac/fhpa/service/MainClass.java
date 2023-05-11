@@ -3,7 +3,7 @@ package com.freddiemac.fhpa.service;
 public class MainClass {
 
 	public static void main(String[] args) {
-		FHPAService service = new FHPAService();
+		ERCFservice service = new ERCFservice();
 		service.process();
 	}
 
