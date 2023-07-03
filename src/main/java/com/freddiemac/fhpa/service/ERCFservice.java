@@ -33,23 +33,21 @@ public class ERCFservice {
 	private String add_qtr;
 	DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
 
-	private LocalDate lamaDate = LocalDate.now();
-	private LocalDate hpiQtr = LocalDate.now(); // constant value ? 06/30/2021 // hpi end date
+	private Date lamaDate = stringToDate("MM/dd/yyyy","09/30/2021");;
+	private Date hpiQtr = stringToDate("MM/dd/yyyy","06/30/2021"); // constant value ? 06/30/2021 // hpi end date
 	private int month = 9;
 	private List<Integer> quarters = Arrays.asList(3, 6, 9);
-	private LocalDate hpi_mo = LocalDate.now();
 
 	private List<String[]> inputData = new ArrayList<>();
 	public void process() {
 		System.out.println("Process Started");
 		List<LongerHpiExpUsNsa> resultMapper = prepareTheData();
-		List<CCAdjOutput> outPutDate = new ArrayList<>();
 		if(resultMapper.size() >0)
 			inputData.add(new String[] { "cd", "yr", "ad_qtr", "hpi_qtr","qtr_seq","month","mon","hpi_mo","lama_month","cpi_value","cpi_mo","hpi","DSFHPI","LRSFHPITrend","adj_pct","ltv_adj_pct","cc_adj" });
 		for (int i = 0; i < resultMapper.size(); i++) {
 			LongerHpiExpUsNsa result = resultMapper.get(i);
 			CCAdjOutput output = new CCAdjOutput();
-			int cutOffMonth = hpiQtr.getMonthValue();
+			int cutOffMonth = hpiQtr.getMonth();
 			int quarter = result.getQuarter();
 			int year = result.getYear();
 			output.setCd(result.getPlace());
@@ -57,6 +55,7 @@ public class ERCFservice {
 			if (result.getPlace().equalsIgnoreCase("USA") && result.getYear() >= 1991) {
 				qtr_no = 0;
 				output.setAddQtr("N");
+				add_qtr = "N";
 			}
 			if (month != 3 || month != 6 || month != 9 || month != 12) {
 				if (quarters.contains(cutOffMonth)) {
@@ -68,6 +67,7 @@ public class ERCFservice {
 					year = year + 1;
 				}
 				output.setAddQtr("Y");
+				add_qtr = "Y";
 			}
 			double lhpi = 1;
 			double hpi3=0;
@@ -105,11 +105,11 @@ public class ERCFservice {
 			int month3 = 3 + 3 * (quarter - 1);
 
 			if (result.getYear() == 1991 && month == 1) {
-				lhpi1_qtr = hpiQtr.getMonthValue();
+				lhpi1_qtr = hpiQtr.getMonth();
 			}
 
 			if (result.getYear() == 1991 && (month == 1 || month == 2)) {
-				lhpi2_qtr = hpiQtr.getMonthValue();
+				lhpi2_qtr = hpiQtr.getMonth();
 			}
 
 			output.setHpiQtr(hpi1);
@@ -235,10 +235,10 @@ public class ERCFservice {
 			double lhpi1_qtr = 1;
 			double lhpi2_qtr = 1;
 			if (Arrays.asList(3, 6, 9, 12).contains(coutOffMonth)) {
-				hpi_mo = hpiQtr.getMonthValue();
+				hpi_mo = hpiQtr.getMonth();
 			} else {
 				if (Arrays.asList(3, 6, 9, 12).contains(month)) {
-					hpi_mo = hpiQtr.getMonthValue();
+					hpi_mo = hpiQtr.getMonth();
 				} else if (Arrays.asList(1, 4, 7, 10).contains(month)) {
 					hpi_mo = lhpi1_qtr * gr_rt_mo1;
 				} else if (Arrays.asList(2, 5, 8, 11).contains(month)) {
