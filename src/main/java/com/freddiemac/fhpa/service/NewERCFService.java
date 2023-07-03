@@ -8,8 +8,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.OptionalInt;
+import java.util.stream.IntStream;
 
 import com.freddiemac.fhpa.model.CCAdjOutput;
 import com.freddiemac.fhpa.model.HPIPOMonthlyHist;
@@ -49,6 +52,53 @@ public class NewERCFService {
 				int month2= 2+3*(qtr-1);
 				int month3= 3+3*(qtr-1);
 				
+				double hpi_mo3=0.0;
+				double hpi_mo2=0.0;
+				double hpi_mo1=0.0;
+				
+				String month1String = month1<10?"0"+month1:month1 +"/01"+"/"+longerHpiExpUsNsaResult.getYear();
+				Date date1 = stringToDate("MM/dd/yyyy", month1String);
+				double lhpi1=0.0;
+				double lhpi2=0.0;
+				int j = getIndexByProperty(monthlyHistResults,date1);
+				if(j==0 || j == 1) {
+					lhpi1 = monthlyHistResults.get(j).getUsaNSA();
+					lhpi2 = monthlyHistResults.get(j).getUsaNSA();
+				}else if(j >= 2) {
+					lhpi1 = monthlyHistResults.get(j-1).getUsaNSA();
+					lhpi2 = monthlyHistResults.get(j-2).getUsaNSA();
+				}
+				double gr_rt_mo1 = monthlyHistResults.get(j).getUsaNSA()/lhpi1;
+				double gr_rt_mo2 = monthlyHistResults.get(j).getUsaNSA()/lhpi2;
+				double lhpi1_qtr=0.0;
+				double lhpi2_qtr=0.0;
+				if(month1 == 1) {
+					lhpi1_qtr = hpi1;
+					lhpi2_qtr = hpi2;
+				}else {
+					lhpi1_qtr = hpi3;
+					lhpi2_qtr = hpi2;
+				}
+				
+				if(Arrays.asList(3, 6, 9, 12).contains(month3)) {
+					hpi_mo3 = hpi3;
+				}else {
+					hpi_mo2 = lhpi2_qtr * gr_rt_mo2;
+					hpi_mo1 = lhpi1_qtr * gr_rt_mo1;
+				}
+				String month2String = month2<10?"0"+month2:month2 +"/01"+"/"+longerHpiExpUsNsaResult.getYear();
+				Date date2 = stringToDate("MM/dd/yyyy", month2String);
+				String month3String = month3<10?"0"+month3:month3 +"/01"+"/"+longerHpiExpUsNsaResult.getYear();
+				Date date3 = stringToDate("MM/dd/yyyy", month3String);
+				
+				Date valMon1 = monthlyHistResults.get(j).getMonth();
+				valMon1.setDate(valMon1.getDate()+3);
+				
+				String lamaMonth1 = valMon1.getYear()+""+(valMon1.getMonth());
+				valMon1.setDate(valMon1.getDate()+1);
+				String lamaMonth2 = valMon1.getYear()+""+(valMon1.getMonth());
+				valMon1.setDate(valMon1.getDate()+1);
+				String lamaMonth3 = valMon1.getYear()+""+(valMon1.getMonth());
 				CCAdjOutput mon1 = new CCAdjOutput();
 				mon1.setYr(longerHpiExpUsNsaResult.getYear());
 				mon1.setCd(longerHpiExpUsNsaResult.getPlace());
@@ -56,6 +106,9 @@ public class NewERCFService {
 				mon1.setHpiQtr(hpi1);
 				mon1.setQtrSeq(qtr_no1);
 				mon1.setMonth(month1);
+				mon1.setHpiMo(hpi_mo1);
+				mon1.setMon(date1);
+				mon1.setLamaMonth(lamaMonth1);
 				CCAdjOutput mon2 = new CCAdjOutput();
 				mon2.setYr(longerHpiExpUsNsaResult.getYear());
 				mon2.setCd(longerHpiExpUsNsaResult.getPlace());
@@ -63,6 +116,9 @@ public class NewERCFService {
 				mon2.setHpiQtr(hpi2);
 				mon2.setQtrSeq(qtr_no2);
 				mon2.setMonth(month2);
+				mon2.setHpiMo(hpi_mo2);
+				mon2.setMon(date2);
+				mon2.setLamaMonth(lamaMonth2);
 				CCAdjOutput mon3 = new CCAdjOutput();
 				mon3.setYr(longerHpiExpUsNsaResult.getYear());
 				mon3.setCd(longerHpiExpUsNsaResult.getPlace());
@@ -70,9 +126,13 @@ public class NewERCFService {
 				mon3.setHpiQtr(hpi3);
 				mon3.setQtrSeq(qtr_no3);
 				mon3.setMonth(month3);
+				mon3.setHpiMo(hpi_mo3);
+				mon3.setMon(date3);
+				mon3.setLamaMonth(lamaMonth3);
 				outputList.add(mon1);
 				outputList.add(mon2);
 				outputList.add(mon3);
+				
 			}
 			
 			
@@ -168,4 +228,11 @@ public class NewERCFService {
 		return date;
 	}
 	
+	private static int getIndexByProperty(List<HPIPOMonthlyHist> hpiMonthlyHistResults, Date targetDate) {
+        OptionalInt optionalIndex = IntStream.range(0, hpiMonthlyHistResults.size())
+                .filter(i -> hpiMonthlyHistResults.get(i).getMonth().equals(targetDate))
+                .findFirst();
+
+        return optionalIndex.orElse(-1);
+    }
 }
